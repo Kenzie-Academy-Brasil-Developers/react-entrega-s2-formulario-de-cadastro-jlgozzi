@@ -1,8 +1,11 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { formSchema } from "../../services/formSchema";
+import { schemaRegister } from "../../services/formSchema";
 
 import Button from "../../components/Button";
 import Form from "../../components/Form";
@@ -10,14 +13,27 @@ import Input from "../../components/Input";
 import Select from "../../components/Select";
 
 import { RegisterPage } from "./style";
+import api from "../../services/api";
 
 const Register = () => {
-  const { register, handleSubmit } = useForm({
-    resolver: yupResolver(formSchema),
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schemaRegister),
   });
 
   const onSubmitFunction = (data) => {
-    console.log(data);
+    delete data.passwordConfirm;
+
+    api
+      .post(`users`, data)
+      .then((response) => {
+        // console.log(response);
+        toast("Usuário criado com sucesso!");
+      })
+      .catch((err) => toast(err.message));
   };
 
   return (
@@ -30,31 +46,65 @@ const Register = () => {
         <h2>Crie sua conta</h2>
         <span>Rápido e grátis, vamos nessa</span>
         <Form onSubmit={handleSubmit(onSubmitFunction)}>
-          <Input id={"name"} register={register}>
+          <Input
+            type={"text"}
+            id={"name"}
+            register={register}
+            error={errors?.name}
+          >
             Nome
           </Input>
 
-          <Input id={"email"} register={register}>
+          <Input
+            type={"email"}
+            id={"email"}
+            register={register}
+            error={errors?.email}
+          >
             Email
           </Input>
 
-          <Input id={"password"} register={register}>
+          <Input
+            type={"password"}
+            id={"password"}
+            register={register}
+            error={errors?.password}
+          >
             Senha
           </Input>
 
-          <Input id={"confirm-password"} register={register}>
+          <Input
+            type={"password"}
+            id={"passwordConfirm"}
+            register={register}
+            error={errors?.passwordConfirm}
+          >
             Confirmar Senha
           </Input>
 
-          <Input id={"bio"} register={register}>
+          <Input
+            type={"text"}
+            id={"bio"}
+            register={register}
+            error={errors?.bio}
+          >
             Bio
           </Input>
 
-          <Input id={"contact"} register={register}>
+          <Input
+            type={"number"}
+            id={"contact"}
+            register={register}
+            error={errors?.contact}
+          >
             Contato
           </Input>
 
-          <Select id={"module"} register={register} name={"Selecionar módulo"}>
+          <Select
+            id={"course_module"}
+            register={register}
+            name={"Selecionar módulo"}
+          >
             <option>Módulo 1</option>
             <option>Módulo 2</option>
             <option>Módulo 3</option>
@@ -68,6 +118,7 @@ const Register = () => {
           </Button>
         </Form>
       </main>
+      <ToastContainer />
     </RegisterPage>
   );
 };

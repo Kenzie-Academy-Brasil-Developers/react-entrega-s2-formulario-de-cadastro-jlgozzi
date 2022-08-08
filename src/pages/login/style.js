@@ -45,4 +45,11 @@ export const LoginPage = styled.div`
 
     padding: 15px;
   }
+  a:hover {
+    background-color: var(--grey-2);
+    transition: 0.3s;
+  }
+  a:active {
+    transform: scale(0.98);
+  }
 `;

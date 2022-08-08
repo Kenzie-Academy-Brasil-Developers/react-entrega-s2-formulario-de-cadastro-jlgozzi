@@ -1,22 +1,69 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-import { useForm } from "react-hook-form";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import { set, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { formSchema } from "../../services/formSchema";
+import { schemaLogin } from "../../services/formSchema";
 
 import Input from "../../components/Input";
 import Button from "../../components/Button";
 import Form from "../../components/Form";
 
 import { LoginPage } from "./style";
+import api from "../../services/api";
+import { useEffect, useState } from "react";
 
 const Login = () => {
-  const { register, handleSubmit } = useForm({
-    resolver: yupResolver(formSchema),
+  localStorage.clear();
+  const [token, setToken] = useState(null);
+  let navigate = useNavigate();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schemaLogin),
   });
 
   const onSubmitFunction = (data) => {
-    console.log(data);
+    // console.log(data);
+
+    api
+      .post(`/sessions`, data)
+      .then((response) => {
+        toast.success("Bem Vindo!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        // console.log(response);
+        setToken(response.data.token);
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("userId", response.data.user.id);
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1000);
+      })
+      .catch((err) =>
+        toast.error("Usuário ou senha incorretos!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        })
+      );
   };
 
   return (
@@ -27,11 +74,21 @@ const Login = () => {
       <main>
         <h2>Login</h2>
         <Form onSubmit={handleSubmit(onSubmitFunction)}>
-          <Input id={"email"} register={register}>
-            Nome
+          <Input
+            type={"email"}
+            id="email"
+            register={register}
+            error={errors?.email}
+          >
+            Email
           </Input>
 
-          <Input id={"password"} register={register}>
+          <Input
+            type={"password"}
+            id={"password"}
+            register={register}
+            error={errors?.password}
+          >
             Senha
           </Input>
 
@@ -42,6 +99,7 @@ const Login = () => {
           <Link to={`/register`}>Cadastre-se</Link>
         </Form>
       </main>
+      <ToastContainer />
     </LoginPage>
   );
 };

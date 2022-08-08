@@ -1,10 +1,20 @@
-import { StyledInput } from "./style";
+import { StyledInput, Error } from "./style";
+import { BiError } from "react-icons/bi";
 
-const Input = ({ id, register, children }) => {
+const Input = ({ type, id, register, error, children }) => {
   return (
     <StyledInput>
       <label htmlFor={id}>{children}</label>
-      <input id={id} {...register(id)} />
+      <div className="div-input">
+        <input type={type} id={id} {...register(id)} />
+
+        {error?.message && (
+          <Error>
+            <BiError />
+            <span>{error.message}</span>
+          </Error>
+        )}
+      </div>
     </StyledInput>
   );
 };
