@@ -81,8 +81,12 @@ const UserProvider = ({ children }) => {
       .then((response) => {
         // console.log(response);
         toast("Usuário criado com sucesso!");
+        navigate("/login");
       })
-      .catch((err) => toast(err.message));
+      .catch((err) => {
+        // console.log(err);
+        toast(err.response?.data.message);
+      });
   };
 
   return (
