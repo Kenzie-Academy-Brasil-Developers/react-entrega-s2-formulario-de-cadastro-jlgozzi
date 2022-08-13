@@ -1,7 +1,7 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { UserContext } from "../../context/UserContext";
+import { useContext } from "react";
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -13,9 +13,10 @@ import Input from "../../components/Input";
 import Select from "../../components/Select";
 
 import { RegisterPage } from "./style";
-import api from "../../services/api";
 
 const Register = () => {
+  const { registerFunction } = useContext(UserContext);
+
   const {
     register,
     handleSubmit,
@@ -23,18 +24,6 @@ const Register = () => {
   } = useForm({
     resolver: yupResolver(schemaRegister),
   });
-
-  const onSubmitFunction = (data) => {
-    delete data.passwordConfirm;
-
-    api
-      .post(`users`, data)
-      .then((response) => {
-        // console.log(response);
-        toast("Usuário criado com sucesso!");
-      })
-      .catch((err) => toast(err.message));
-  };
 
   return (
     <RegisterPage>
@@ -45,7 +34,7 @@ const Register = () => {
       <main>
         <h2>Crie sua conta</h2>
         <span>Rápido e grátis, vamos nessa</span>
-        <Form onSubmit={handleSubmit(onSubmitFunction)}>
+        <Form onSubmit={handleSubmit(registerFunction)}>
           <Input
             type={"text"}
             id={"name"}
@@ -118,7 +107,6 @@ const Register = () => {
           </Button>
         </Form>
       </main>
-      <ToastContainer />
     </RegisterPage>
   );
 };

@@ -1,9 +1,6 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { schemaLogin } from "../../services/formSchema";
 
@@ -12,13 +9,13 @@ import Button from "../../components/Button";
 import Form from "../../components/Form";
 
 import { LoginPage } from "./style";
-import api from "../../services/api";
-import { useEffect, useState } from "react";
+import { useContext } from "react";
+import { UserContext } from "../../context/UserContext.js";
 
 const Login = () => {
   localStorage.clear();
-  const [token, setToken] = useState(null);
-  let navigate = useNavigate();
+
+  const { login } = useContext(UserContext);
 
   const {
     register,
@@ -28,44 +25,6 @@ const Login = () => {
     resolver: yupResolver(schemaLogin),
   });
 
-  const onSubmitFunction = (data) => {
-    // console.log(data);
-
-    api
-      .post(`/sessions`, data)
-      .then((response) => {
-        toast.success("Bem Vindo!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        });
-        // console.log(response);
-        setToken(response.data.token);
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("userId", response.data.user.id);
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 1000);
-      })
-      .catch((err) =>
-        toast.error("Usuário ou senha incorretos!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        })
-      );
-  };
-
   return (
     <LoginPage>
       <header>
@@ -73,7 +32,7 @@ const Login = () => {
       </header>
       <main>
         <h2>Login</h2>
-        <Form onSubmit={handleSubmit(onSubmitFunction)}>
+        <Form onSubmit={handleSubmit(login)}>
           <Input
             type={"email"}
             id="email"
@@ -99,7 +58,6 @@ const Login = () => {
           <Link to={`/register`}>Cadastre-se</Link>
         </Form>
       </main>
-      <ToastContainer />
     </LoginPage>
   );
 };
