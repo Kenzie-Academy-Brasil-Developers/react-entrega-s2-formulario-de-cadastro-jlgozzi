@@ -43,6 +43,10 @@ export const DashboardHeader = styled.header`
 
     padding: 10px;
   }
+  div a:hover {
+    background-color: var(--grey-2);
+    transition: 0.3s;
+  }
 `;
 
 export const DashboardMain = styled.main`
@@ -83,9 +87,40 @@ export const DashboardMain = styled.main`
   }
   .main-box div {
     margin: 0 auto;
-    margin-top: 50px;
+    margin-top: 30px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    /* background-color: red; */
+    align-items: center;
 
     width: 70%;
     max-width: 90%;
+  }
+  .main-box-button {
+    text-decoration: none;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+
+    color: var(--grey-0);
+    background-color: transparent;
+
+    border-radius: 4px;
+    border: none;
+
+    width: 35px;
+
+    padding: 7px;
+  }
+  .main-box-button svg {
+    width: 100%;
+    height: 100%;
+    color: var(--grey-0);
+  }
+  .main-box-button svg:hover {
+    color: var(--color-primary);
+    transition: 0.3s;
   }
 `;

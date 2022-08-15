@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 
 import { toast } from "react-toastify";
 
@@ -11,13 +11,13 @@ export const UserContext = createContext({});
 const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [techs, setTechs] = useState([]);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     async function loadData() {
       const token = localStorage.getItem("@token");
-      const userId = localStorage.getItem("@user-id");
 
       api.defaults.headers.authorization = `Bearer ${token}`;
 
@@ -25,6 +25,8 @@ const UserProvider = ({ children }) => {
         try {
           const response = await api.get(`/profile`);
           setUser(response.data);
+          setTechs(response.data.techs);
+          // console.log(tech);
         } catch (err) {
           console.log(err);
         }
@@ -32,11 +34,9 @@ const UserProvider = ({ children }) => {
       setLoading(false);
     }
     loadData();
-  }, []);
+  }, [user]);
 
   const login = (data) => {
-    console.log("oiata");
-
     api
       .post(`/sessions`, data)
       .then((response) => {
@@ -50,7 +50,7 @@ const UserProvider = ({ children }) => {
           progress: undefined,
           theme: "colored",
         });
-        console.log(response);
+        // console.log(response);
         localStorage.setItem("@token", response.data.token);
         localStorage.setItem("@user-id", response.data.user.id);
         setUser(response.data.user);
@@ -90,7 +90,17 @@ const UserProvider = ({ children }) => {
   };
 
   return (
-    <UserContext.Provider value={{ registerFunction, login, user, loading }}>
+    <UserContext.Provider
+      value={{
+        registerFunction,
+        login,
+        user,
+        loading,
+        setUser,
+        techs,
+        setTechs,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );

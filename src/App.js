@@ -9,13 +9,16 @@ import "react-toastify/dist/ReactToastify.css";
 // import Register from "./pages/register";
 import RoutesTree from "./routes";
 import GlobalStyle from "./styles/Global";
+import TechProvider from "./context/TechContext";
 
 function App() {
   return (
     <UserProvider>
-      <GlobalStyle />
-      <RoutesTree />
-      <ToastContainer />
+      <TechProvider>
+        <GlobalStyle />
+        <RoutesTree />
+        <ToastContainer />
+      </TechProvider>
     </UserProvider>
   );
 }

@@ -34,3 +34,11 @@ export const schemaRegister = yup.object().shape({
     )
     .required("asdfasd"),
 });
+
+export const schemaNewTech = yup.object().shape({
+  title: yup.string().required("Digite um nome para a Tecnologia"),
+});
+
+export const schemaUpdateTech = yup.object().shape({
+  status: yup.string().required("Digite um nome para a Tecnologia"),
+});

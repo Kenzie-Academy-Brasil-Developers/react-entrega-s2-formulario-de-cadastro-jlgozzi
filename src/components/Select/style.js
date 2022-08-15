@@ -12,6 +12,7 @@ export const StyledSelect = styled.div`
   }
 
   select {
+    color: var(--grey-0);
     background-color: var(--grey-2);
     border: 1px solid transparent;
     border-radius: 4px;

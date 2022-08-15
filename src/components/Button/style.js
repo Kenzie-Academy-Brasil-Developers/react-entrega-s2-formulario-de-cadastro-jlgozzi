@@ -4,8 +4,11 @@ export const ButtonStyled = styled.button`
   font-size: 1rem;
   font-weight: 500;
 
+  white-space: nowrap;
+
   color: var(--grey-0);
-  background-color: var(--color-primary);
+  background-color: ${(props) =>
+    props.color ? "var(--color-primary)" : "var(--grey-1)"};
 
   border-radius: 4px;
   border: 1px solid

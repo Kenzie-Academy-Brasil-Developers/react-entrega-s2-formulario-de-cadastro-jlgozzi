@@ -26,6 +26,9 @@ export const StyledInput = styled.div`
     border-radius: 4px;
     height: 48px;
   }
+  input:disabled {
+    color: var(--grey-0);
+  }
   input:focus {
     outline: none;
     background-color: transparent;

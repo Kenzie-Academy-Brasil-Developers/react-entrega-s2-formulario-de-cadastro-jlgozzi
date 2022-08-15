@@ -1,12 +1,21 @@
 import { DashboardHeader, DashboardMain, DashboardPage } from "./style";
+import Button from "../../components/Button";
+import { BsFillBookmarkPlusFill } from "react-icons/bs";
 
 import { Link, Navigate } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../../context/UserContext.js";
+import { TechList } from "../../components/TechList";
+import Modal from "../../components/Modal";
+import { TechContext } from "../../context/TechContext";
+import ModalEditar from "../../components/ModalEditar";
 
 const Dashboard = () => {
   const { user, loading } = useContext(UserContext);
+  const { modalIsVisible, setModalIsVisible, modalEditarIsVisible } =
+    useContext(TechContext);
 
+  // console.log(user);
   if (loading === true) {
     return <h1>Loading...</h1>;
   }
@@ -28,14 +37,22 @@ const Dashboard = () => {
         </section>
         <section className="main-box">
           <div>
-            <h3>Que pena! Estamos em desenvolvimento :/</h3>
-            <p>
-              Nossa aplicação está em desenvolvimento, em breve teremos
-              novidades
-            </p>
+            <h3>Tecnologias</h3>
+            <button
+              className="main-box-button"
+              onClick={(event) => {
+                event.preventDefault();
+                setModalIsVisible(!modalIsVisible);
+              }}
+            >
+              <BsFillBookmarkPlusFill />
+            </button>
           </div>
+          <TechList />
         </section>
       </DashboardMain>
+      {modalIsVisible && <Modal />}
+      {modalEditarIsVisible && <ModalEditar />}
     </DashboardPage>
   ) : (
     <Navigate to="/login" />
