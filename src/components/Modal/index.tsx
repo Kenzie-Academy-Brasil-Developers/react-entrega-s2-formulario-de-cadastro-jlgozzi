@@ -3,24 +3,29 @@ import Button from "../Button";
 import Input from "../Input";
 import Select from "../Select";
 
-import { useForm } from "react-hook-form";
+import { useForm, UseFormRegister } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { schemaNewTech } from "../../services/formSchema";
 
 import { ModalDiv } from "./style";
 
 import { IoMdCloseCircleOutline } from "react-icons/io";
-import { useContext } from "react";
-import { TechContext } from "../../context/TechContext";
+
+import { useTechContext } from "../../context/TechContext";
+
+export interface IFormValues {
+  title: string;
+  status: string;
+}
 
 const Modal = () => {
-  const { setModalIsVisible, createNewTech } = useContext(TechContext);
+  const { setModalIsVisible, createNewTech } = useTechContext();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<IFormValues>({
     resolver: yupResolver(schemaNewTech),
   });
 
@@ -42,7 +47,7 @@ const Modal = () => {
           <Form onSubmit={handleSubmit(createNewTech)}>
             <Input
               type={"title"}
-              id="title"
+              id={"title"}
               register={register}
               error={errors?.title}
             >

@@ -10,14 +10,12 @@ import { schemaUpdateTech } from "../../services/formSchema";
 import { ModalDiv } from "./style";
 
 import { IoMdCloseCircleOutline } from "react-icons/io";
-import { useContext } from "react";
-import { TechContext } from "../../context/TechContext";
-import { UserContext } from "../../context/UserContext";
+
+import { useTechContext } from "../../context/TechContext";
 
 const ModalEditar = () => {
   const { setModalEditarIsVisible, deleteTech, updateTech, tech } =
-    useContext(TechContext);
-  // const { techs } = useContext(UserContext);
+    useTechContext();
 
   const {
     register,

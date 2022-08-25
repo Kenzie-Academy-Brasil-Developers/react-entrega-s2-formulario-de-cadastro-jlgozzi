@@ -1,13 +1,13 @@
-import { useState } from "react";
-import { useContext, useEffect } from "react";
-import { TechContext } from "../../context/TechContext.js";
-import { UserContext } from "../../context/UserContext.js";
-import { Tech, TechListDiv } from "./style.js";
+// import { useState } from "react";
+import { useContext } from "react";
+import { useTechContext } from "../../context/TechContext";
+import { useUserContext } from "../../context/UserContext";
+import { Tech, TechListDiv } from "./style";
 
 export const TechList = () => {
-  const { techs } = useContext(UserContext);
+  const { techs } = useUserContext();
   const { setModalEditarIsVisible, modalEditarIsVisible, setTech } =
-    useContext(TechContext);
+    useTechContext();
 
   return (
     <>

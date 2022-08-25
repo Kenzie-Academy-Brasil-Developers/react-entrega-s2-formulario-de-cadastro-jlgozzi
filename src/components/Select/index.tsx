@@ -1,6 +1,15 @@
 import { StyledSelect } from "./style";
 
-const Select = ({ id, register, name, children }) => {
+import { ReactElement } from "React";
+
+interface ISelectProps {
+  id: string;
+  register: any;
+  name: string;
+  children: ReactElement[] | ReactElement;
+}
+
+const Select = ({ id, register, name, children }: ISelectProps) => {
   return (
     <StyledSelect>
       <label htmlFor={id}>{name}</label>

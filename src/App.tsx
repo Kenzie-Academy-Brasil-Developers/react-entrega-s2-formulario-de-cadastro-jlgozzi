@@ -1,5 +1,5 @@
 import "./App.css";
-import UserProvider from "./context/UserContext.js";
+import UserProvider from "./context/UserContext";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

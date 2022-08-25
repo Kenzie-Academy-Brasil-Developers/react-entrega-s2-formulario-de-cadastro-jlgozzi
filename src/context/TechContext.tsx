@@ -1,19 +1,51 @@
-import { useContext } from "react";
+import { ReactElement, useContext } from "react";
 import { createContext, useState } from "react";
 import { toast } from "react-toastify";
 import api from "../services/api";
-import { UserContext } from "./UserContext";
+import { useUserContext } from "./UserContext";
 
-export const TechContext = createContext({});
+interface IChildren {
+  children: ReactElement[] | ReactElement;
+}
+interface IDataTech {
+  title: string;
+  status: string;
+}
+interface ITechId {
+  id: string;
+}
 
-const TechProvider = ({ children }) => {
-  const { setUser, techs, setTechs } = useContext(UserContext);
+interface ITech {
+  id: string;
+  title: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}
 
-  const [modalEditarIsVisible, setModalEditarIsVisible] = useState(false);
-  const [modalIsVisible, setModalIsVisible] = useState(false);
-  const [tech, setTech] = useState(null);
+interface ITechContext {
+  modalIsVisible: boolean;
+  setModalIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  modalEditarIsVisible: boolean;
+  setModalEditarIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  createNewTech: (data: IDataTech) => Promise<void>;
+  deleteTech: (tech_id: ITechId) => Promise<void>;
+  updateTech: (data: IDataTech) => Promise<void>;
+  tech: ITech;
+  setTech: React.Dispatch<React.SetStateAction<ITech>>;
+}
 
-  async function createNewTech(data) {
+const TechContext = createContext<ITechContext>({} as ITechContext);
+
+const TechProvider = ({ children }: IChildren) => {
+  const { setTechs } = useUserContext();
+
+  const [modalEditarIsVisible, setModalEditarIsVisible] =
+    useState<boolean>(false);
+  const [modalIsVisible, setModalIsVisible] = useState<boolean>(false);
+  const [tech, setTech] = useState<ITech>({} as ITech);
+
+  async function createNewTech(data: IDataTech) {
     // console.log(data);
 
     const userId = localStorage.getItem("@user-id");
@@ -59,7 +91,7 @@ const TechProvider = ({ children }) => {
       });
     }
   }
-  async function deleteTech(tech_id) {
+  async function deleteTech(tech_id: ITechId) {
     const userId = localStorage.getItem("@user-id");
     let isError = false;
 
@@ -104,7 +136,7 @@ const TechProvider = ({ children }) => {
     }
   }
 
-  async function updateTech(data) {
+  async function updateTech(data: IDataTech) {
     const userId = localStorage.getItem("@user-id");
     const status = { status: data.status };
 
@@ -171,3 +203,9 @@ const TechProvider = ({ children }) => {
 };
 
 export default TechProvider;
+
+export function useTechContext(): ITechContext {
+  const context = useContext(TechContext);
+
+  return context;
+}

@@ -1,4 +1,10 @@
-import { createContext, useState, useEffect, useContext } from "react";
+import {
+  createContext,
+  useState,
+  useEffect,
+  ReactElement,
+  useContext,
+} from "react";
 
 import { toast } from "react-toastify";
 
@@ -6,12 +12,70 @@ import { useNavigate } from "react-router-dom";
 
 import api from "../services/api";
 
-export const UserContext = createContext({});
+interface IChildren {
+  children: ReactElement;
+}
 
-const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [techs, setTechs] = useState([]);
+export interface ITechs {
+  id: string;
+  title: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}
+
+// interface IResponse {
+//   config: ReactElement;
+//   data: { user: IUser; token: string };
+//   headers: any;
+//   request: any;
+//   status: number;
+//   statusText: string;
+// }
+
+interface IUser {
+  id: string;
+  name: string;
+  email: string;
+  course_module: string;
+  bio: string;
+  contact: string;
+  techs: ITechs[];
+  works?: string[];
+  created_at: string;
+  updated_at: string;
+  avatar_url: string;
+}
+interface IDataUser {
+  email: string;
+  password: string;
+}
+interface IDataRegister {
+  password: string;
+  passwordConfirm?: string;
+  name: string;
+  email: string;
+  course_module: string;
+  bio: string;
+  contact: string;
+}
+
+interface IUserContext {
+  registerFunction: (data: IDataRegister) => void;
+  login: (data: IDataUser) => void;
+  user: IUser;
+  loading: boolean;
+  setUser: React.Dispatch<React.SetStateAction<IUser>>;
+  techs: ITechs[];
+  setTechs: React.Dispatch<React.SetStateAction<ITechs[]>>;
+}
+
+export const UserContext = createContext<IUserContext>({} as IUserContext);
+
+const UserProvider = ({ children }: IChildren) => {
+  const [user, setUser] = useState<IUser>({} as IUser);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [techs, setTechs] = useState<ITechs[]>([]);
 
   const navigate = useNavigate();
 
@@ -19,14 +83,16 @@ const UserProvider = ({ children }) => {
     async function loadData() {
       const token = localStorage.getItem("@token");
 
-      api.defaults.headers.authorization = `Bearer ${token}`;
+      api.defaults.headers.common = {
+        Authorization: `Bearer ${token}`,
+      };
 
       if (token) {
         try {
           const response = await api.get(`/profile`);
           setUser(response.data);
           setTechs(response.data.techs);
-          // console.log(tech);
+          // console.log(response);
         } catch (err) {
           console.log(err);
         }
@@ -34,9 +100,9 @@ const UserProvider = ({ children }) => {
       setLoading(false);
     }
     loadData();
-  }, [user]);
+  }, []);
 
-  const login = (data) => {
+  const login = (data: IDataUser) => {
     api
       .post(`/sessions`, data)
       .then((response) => {
@@ -54,7 +120,10 @@ const UserProvider = ({ children }) => {
         localStorage.setItem("@token", response.data.token);
         localStorage.setItem("@user-id", response.data.user.id);
         setUser(response.data.user);
-        api.defaults.headers.authorization = `Bearer ${response.data.token}`;
+        setTechs(response.data.user.techs);
+        api.defaults.headers.common = {
+          Authorization: `Bearer ${response.data.token}`,
+        };
         navigate("/dashboard");
       })
       .catch((err) => {
@@ -73,7 +142,7 @@ const UserProvider = ({ children }) => {
       });
   };
 
-  const registerFunction = (data) => {
+  const registerFunction = (data: IDataRegister) => {
     delete data.passwordConfirm;
 
     api
@@ -107,3 +176,9 @@ const UserProvider = ({ children }) => {
 };
 
 export default UserProvider;
+
+export function useUserContext(): IUserContext {
+  const context = useContext(UserContext);
+
+  return context;
+}

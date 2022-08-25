@@ -35,6 +35,9 @@ export const StyledInput = styled.div`
     border: 1px solid var(--grey-0);
     transition: 0.4s;
   }
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+  }
 `;
 
 export const Error = styled.div`
@@ -59,7 +62,7 @@ export const Error = styled.div`
   }
   span {
     background-color: var(--negative);
-    color: #fff;
+    color: #ffffff;
 
     height: 120%;
     width: 100px;
@@ -85,6 +88,17 @@ export const Error = styled.div`
       position: absolute;
       top: 5px;
       left: -7px;
+    }
+
+    @media (max-width: 630px) {
+      top: -80px;
+      left: -60px;
+      width: 80px;
+      &::before {
+        transform: rotate(0deg);
+        top: 80px;
+        left: 66px;
+      }
     }
   }
 `;
