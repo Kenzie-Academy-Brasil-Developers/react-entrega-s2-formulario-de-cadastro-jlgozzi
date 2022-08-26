@@ -1,6 +1,6 @@
 import { StyledSelect } from "./style";
 
-import { ReactElement } from "React";
+import { ReactElement } from "react";
 
 interface ISelectProps {
   id: string;
